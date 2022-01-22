@@ -82,20 +82,3 @@ class BinaryFractionBTree:
             if node.left_child:
                 return self._find_traverse(num, node.left_child)
         return node.format_result()
-
-
-def find_nearest_fraction(num, precision_level=5):
-    if isinstance(num, int):
-        return num
-    if num.is_integer():
-        return int(num)
-    whole = int(num)
-    frac_str = str(num).split('.')[1]
-    decimal_factor = 10 ** len(frac_str)
-    fraction = int(frac_str)
-    ff = BinaryFractionBTree(precision_level)
-    nearest = ff.find_nearest(fraction / decimal_factor)
-    return f"{whole} {nearest}"
-
-
-print(find_nearest_fraction(17.29))

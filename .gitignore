@@ -1,0 +1,19 @@
+.idea/
+__pycache__/
+static/
+upload-pictures/
+
+.ebextensions/*
+.elasticbeanstalk/*
+
+server-env
+
+*.log
+playground/*
+
+.env
+# app.yaml
+cloud_sql_proxy
+gcloud_env.yaml
+/gcloud_connections.txt
+csm-dd4af2a77c6b.json

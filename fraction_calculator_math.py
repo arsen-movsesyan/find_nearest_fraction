@@ -1,7 +1,7 @@
 import math
 
 
-def get_fractional(number, max_denominator=64):
+def get_fractional(number, max_denominator):
     integer = number // 1
     fraction = number % 1
     if fraction == 0:
@@ -17,8 +17,4 @@ def get_fractional(number, max_denominator=64):
                 break
         denominator *= 2
     min_fraction = min(_list, key=lambda a: a[0])
-    return [int(integer), int(min_fraction[1]), int(min_fraction[2])]
-
-
-# TEST
-decimal = 17.29
+    return int(integer), int(min_fraction[1]), int(min_fraction[2])
