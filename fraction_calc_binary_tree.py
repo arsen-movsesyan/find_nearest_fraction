@@ -9,6 +9,9 @@ class BFNode:
     def format_result(self):
         return f"{self.data['numerator']} / {self.data['denominator']}"
 
+    def get_result(self):
+        return self.data['numerator'], self.data['denominator']
+
 
 class BinaryFractionBTree:
 
@@ -72,7 +75,7 @@ class BinaryFractionBTree:
         elif num > self.root.data['value']:
             return self._find_traverse(num, self.root.left_child)
         else:
-            return self.root.format_result()
+            return self.root.get_result()
 
     def _find_traverse(self, num, node):
         if node.data['value'] > num:
@@ -81,4 +84,4 @@ class BinaryFractionBTree:
         elif node.data['value'] < num:
             if node.left_child:
                 return self._find_traverse(num, node.left_child)
-        return node.format_result()
+        return node.get_result()

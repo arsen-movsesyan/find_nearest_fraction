@@ -11,6 +11,9 @@ class BinaryTreeUsage(Resource):
     precision_level = 5
     decimal_fraction = None
     result_fraction = None
+    whole = None
+    numerator = None
+    denominator = None
 
     def get(self):
         return self._get_result()
@@ -33,27 +36,34 @@ class BinaryTreeUsage(Resource):
     def _find_nearest_fraction(self):
         if self.decimal_fraction.is_integer():
             self.result_fraction = str(int(self.decimal_fraction))
+            self.whole = int(self.decimal_fraction)
         else:
-            whole = int(self.decimal_fraction)
+            self.whole = int(self.decimal_fraction)
             frac_str = str(self.decimal_fraction).split('.')[1]
             decimal_factor = 10 ** len(frac_str)
             fraction = int(frac_str)
             ff = BinaryFractionBTree(self.precision_level)
-            nearest = ff.find_nearest(fraction / decimal_factor)
-            self.result_fraction = f"{whole} {nearest}"
+            self.numerator, self.denominator = ff.find_nearest(fraction / decimal_factor)
+            self.result_fraction = f"{self.whole} {self.numerator} / {self.denominator}"
 
     def _get_result(self):
         return {
             "decimal": self.decimal_fraction,
             "precision": self.precision_level,
-            "fraction": self.result_fraction
+            "fraction": self.result_fraction,
+            "whole": self.whole,
+            "numerator": self.numerator,
+            "denominator": self.denominator
         }
 
 
 class SingleMethodUsage(Resource):
-    denominator = 64
+    precision = 64
     decimal_fraction = None
     result_fraction = None
+    whole = None
+    numerator = None
+    denominator = None
 
     def get(self):
         return self._get_result()
@@ -69,22 +79,25 @@ class SingleMethodUsage(Resource):
             help='Fraction of this value should be used. Default is 64'
         )
         args = parser.parse_args(strict=True)
-        self.denominator = args['denominator']
+        self.precision = args['denominator']
         self.decimal_fraction = args['decimal_fraction']
-        whole, numerator, denominator = get_fractional( self.decimal_fraction, self.denominator)
-        self.result_fraction = f"{whole} {numerator} / {denominator}"
+        self.whole, self.numerator, self.denominator = get_fractional( self.decimal_fraction, self.precision)
+        self.result_fraction = f"{self.whole} {self.numerator} / {self.denominator}"
         return self._get_result()
 
     def _get_result(self):
         return {
             "decimal": self.decimal_fraction,
-            "precision": self.denominator,
-            "fraction": self.result_fraction
+            "precision": self.precision,
+            "fraction": self.result_fraction,
+            "whole": self.whole,
+            "numerator": self.numerator,
+            "denominator": self.denominator
         }
 
 
-api.add_resource(BinaryTreeUsage, '/binary_tree')
-api.add_resource(SingleMethodUsage, '/single_method')
+api.add_resource(BinaryTreeUsage, '/btree')
+api.add_resource(SingleMethodUsage, '/math')
 
 if __name__ == '__main__':
     app.run()
