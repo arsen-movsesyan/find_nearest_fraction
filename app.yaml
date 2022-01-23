@@ -1,8 +1,5 @@
 runtime: python39
 
-env_variables:
-  FLASK_APP=app
-
 handlers:
   - url: /.*
     script: auto
