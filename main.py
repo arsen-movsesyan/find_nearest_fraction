@@ -127,4 +127,4 @@ api.add_resource(BinaryTreeUsage, '/btree')
 api.add_resource(SingleMethodUsage, '/densed')
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host="0.0.0.0")

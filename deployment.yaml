@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nf-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nf-backend
+  template:
+    metadata:
+      labels:
+        app: nf-backend
+    spec:
+      containers:
+        - name: nf-backend-node
+          image: movsesyan/nf-backend
