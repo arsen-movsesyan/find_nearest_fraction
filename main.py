@@ -10,7 +10,7 @@ app = Flask(__name__)
 CORS(app)
 api = Api(app)
 
-btree_precision_choices = [2, 3, 4, 5, 6, 7, 8, 9, 10]
+btree_precision_choices = [i for i in range(2, 11)]
 default_precision = 5
 
 
@@ -24,7 +24,7 @@ class Algorithms(Resource):
                 "github_url": "https://github.com/arsen-movsesyan/find_nearest_fraction/blob/6d9697e4b60c32ee7358b3d7215d65b0c90e74b6/fraction_calc_binary_tree.py",
                 "api_endpoint": "btree",
                 "precision_choice": btree_precision_choices,
-                "default_precision": 5
+                "default_precision": default_precision
             },
             {
                 "name": "Condensed",
@@ -67,7 +67,7 @@ class BinaryTreeUsage(Resource, ResponseMixin):
         parser.add_argument(
             'precision',
             type=int,
-            default=5,
+            default=self.precision,
             required=False,
             choices=btree_precision_choices,
             help=f'Invalid input. Valid choices are integer values in range from {btree_precision_choices[0]} to {btree_precision_choices[-1]} inclusive')
@@ -120,25 +120,28 @@ class FractionToDecimal(Resource, ResponseMixin):
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('fraction', type=str, required=True)
+        parser.add_argument('whole', type=int, required=False)
         parser.add_argument(
             'precision',
             type=int,
             required=False,
             choices=btree_precision_choices,
-            default=5,
+            default=self.precision,
             help=f"Invalid input. Valid choices are integer values in range from {btree_precision_choices[0]} to {btree_precision_choices[-1]} inclusive"
         )
         args = parser.parse_args(strict=True)
         try:
             fraction = Fraction(args['fraction'])
-        except ValueError as e:
+        except ValueError:
             return {"message": f"Invalid input. Cannot convert to fraction {args['fraction']}"}, 400
         self.numerator = fraction.numerator
         if 'precision' in args:
             self.precision = args['precision']
         self.denominator = fraction.denominator
-        self.result_fraction = round(self.numerator / self.denominator, self.precision)
-
+        self.decimal_fraction = round(self.numerator / self.denominator, self.precision)
+        if args['whole'] is not None:
+            self.whole = args['whole']
+        self.result_fraction = f"{self.whole} {self.numerator} / {self.denominator}"
         return self.get_result()
 
 
