@@ -141,6 +141,9 @@ class FractionToDecimal(Resource, ResponseMixin):
         self.decimal_fraction = round(self.numerator / self.denominator, self.precision)
         if args['whole'] is not None:
             self.whole = args['whole']
+            self.decimal_fraction += abs(self.whole)
+            if self.whole < 0:
+                self.decimal_fraction *= -1
         self.result_fraction = f"{self.whole} {self.numerator} / {self.denominator}"
         return self.get_result()
 
